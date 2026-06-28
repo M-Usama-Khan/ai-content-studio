@@ -3,10 +3,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from app.database import engine, Base
 from app.models import models
+from app.routers import auth
 
 load_dotenv()
 
-# Tables create karo automatically
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
@@ -22,6 +22,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Routers
+app.include_router(auth.router)
 
 @app.get("/")
 def root():
