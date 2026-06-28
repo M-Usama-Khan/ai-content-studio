@@ -1,5 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
+from fastapi import APIRouter, Depends, HTTPException
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.schemas.schemas import UserRegister, UserLogin, Token, UserResponse
@@ -14,16 +14,10 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 # ── Register ──────────────────────────────────
 @router.post("/register", response_model=Token)
 def register(user_data: UserRegister, db: Session = Depends(get_db)):
-    # Check email already exists
     existing = get_user_by_email(db, user_data.email)
     if existing:
-        raise HTTPException(
-            status_code=400,
-            detail="Email already registered"
-        )
-    # Create user
+        raise HTTPException(status_code=400, detail="Email already registered")
     user = create_user(db, user_data)
-    # Generate token
     token = create_access_token({"sub": user.email})
     return Token(
         access_token=token,
@@ -31,15 +25,15 @@ def register(user_data: UserRegister, db: Session = Depends(get_db)):
         user=UserResponse.model_validate(user)
     )
 
-# ── Login ─────────────────────────────────────
+# ── Login (Form based — Swagger compatible) ───
 @router.post("/login", response_model=Token)
-def login(user_data: UserLogin, db: Session = Depends(get_db)):
-    user = get_user_by_email(db, user_data.email)
-    if not user or not verify_password(user_data.password, user.password):
-        raise HTTPException(
-            status_code=401,
-            detail="Invalid email or password"
-        )
+def login(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    db: Session = Depends(get_db)
+):
+    user = get_user_by_email(db, form_data.username)
+    if not user or not verify_password(form_data.password, user.password):
+        raise HTTPException(status_code=401, detail="Invalid email or password")
     token = create_access_token({"sub": user.email})
     return Token(
         access_token=token,
