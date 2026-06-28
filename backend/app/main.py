@@ -1,6 +1,13 @@
-from fastapi import FastAPI  # type: ignore[reportMissingImports]
-from fastapi.middleware.cors import CORSMiddleware  # type: ignore[reportMissingImports]
-import os
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from dotenv import load_dotenv
+from app.database import engine, Base
+from app.models import models
+
+load_dotenv()
+
+# Tables create karo automatically
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="AI Content Studio",
