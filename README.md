@@ -285,7 +285,7 @@ The application is fully responsive with:
 
 ## 👨‍💻 Developer
 
-**Built for IBM Competition 2025**
+**Built for IBM Competition 2026**
 
 ---
 
