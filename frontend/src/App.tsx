@@ -5,12 +5,22 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import IdeaGenerator from './pages/IdeaGenerator'
+import ScriptWriter from './pages/ScriptWriter'
+import HashtagTool from './pages/HashtagTool'
 import Layout from './components/Layout'
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated } = useAuthStore()
   return isAuthenticated ? <>{children}</> : <Navigate to="/login" />
 }
+
+const withLayout = (Component: React.FC) => (
+  <ProtectedRoute>
+    <Layout>
+      <Component />
+    </Layout>
+  </ProtectedRoute>
+)
 
 function App() {
   return (
@@ -19,26 +29,10 @@ function App() {
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Layout>
-                <Dashboard />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/ideas"
-          element={
-            <ProtectedRoute>
-              <Layout>
-                <IdeaGenerator />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/dashboard" element={withLayout(Dashboard)} />
+        <Route path="/ideas" element={withLayout(IdeaGenerator)} />
+        <Route path="/scripts" element={withLayout(ScriptWriter)} />
+        <Route path="/hashtags" element={withLayout(HashtagTool)} />
       </Routes>
     </BrowserRouter>
   )
