@@ -9,42 +9,57 @@ client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 MODEL = "llama-3.3-70b-versatile"
 
 def generate_content_ideas(platform: str, niche: str, language: str, count: int = 10) -> list:
-    prompt = f"""You are a viral content strategist expert.
+    all_ideas = []
+    batch_size = 10
+    batches = (count + batch_size - 1) // batch_size
 
-Generate {count} viral content ideas for:
+    for batch in range(batches):
+        current_count = min(batch_size, count - len(all_ideas))
+
+        prompt = f"""You are a viral content strategist expert.
+
+Generate {current_count} viral content ideas for:
 - Platform: {platform}
-- Niche: {niche}  
+- Niche: {niche}
 - Language: {language}
 
 Return ONLY a JSON array with this exact format:
 [
   {{
     "title": "Content title here",
-    "description": "Why this will go viral (2 sentences)",
-    "content_type": "Video/Reel/Post/Short",
+    "description": "Why this will go viral (1 sentence)",
+    "content_type": "Video",
     "viral_score": 8,
     "hook": "First 5 seconds hook line"
   }}
 ]
 
-Return only JSON, no extra text. Write titles and descriptions in {language}."""
+Return only valid JSON array, no extra text."""
 
-    response = client.chat.completions.create(
-        model=MODEL,
-        messages=[{"role": "user", "content": prompt}],
-        temperature=0.8,
-        max_tokens=2000,
-    )
-    
-    content = response.choices[0].message.content.strip()
-    
-    # Clean JSON
-    if "```json" in content:
-        content = content.split("```json")[1].split("```")[0].strip()
-    elif "```" in content:
-        content = content.split("```")[1].split("```")[0].strip()
-    
-    return json.loads(content)
+        response = client.chat.completions.create(
+            model=MODEL,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.8,
+            max_tokens=2000,
+        )
+
+        content = response.choices[0].message.content.strip()
+
+        if "```json" in content:
+            content = content.split("```json")[1].split("```")[0].strip()
+        elif "```" in content:
+            content = content.split("```")[1].split("```")[0].strip()
+
+        try:
+            batch_ideas = json.loads(content)
+            all_ideas.extend(batch_ideas)
+        except json.JSONDecodeError:
+            continue
+
+        if len(all_ideas) >= count:
+            break
+
+    return all_ideas[:count]
 
 
 def generate_script(title: str, platform: str, language: str, duration: int = 3) -> dict:
@@ -70,7 +85,7 @@ Return ONLY a JSON object with this exact format:
   "estimated_duration": "{duration} minutes"
 }}
 
-Write content in {language}. Return only JSON."""
+Write content in {language}. Return only valid JSON."""
 
     response = client.chat.completions.create(
         model=MODEL,
@@ -78,14 +93,14 @@ Write content in {language}. Return only JSON."""
         temperature=0.7,
         max_tokens=2000,
     )
-    
+
     content = response.choices[0].message.content.strip()
-    
+
     if "```json" in content:
         content = content.split("```json")[1].split("```")[0].strip()
     elif "```" in content:
         content = content.split("```")[1].split("```")[0].strip()
-    
+
     return json.loads(content)
 
 
@@ -108,7 +123,7 @@ Return ONLY a JSON object:
   "estimated_reach": "10K - 50K"
 }}
 
-Return only JSON."""
+Return only valid JSON."""
 
     response = client.chat.completions.create(
         model=MODEL,
@@ -116,12 +131,12 @@ Return only JSON."""
         temperature=0.6,
         max_tokens=1000,
     )
-    
+
     content = response.choices[0].message.content.strip()
-    
+
     if "```json" in content:
         content = content.split("```json")[1].split("```")[0].strip()
     elif "```" in content:
         content = content.split("```")[1].split("```")[0].strip()
-    
+
     return json.loads(content)

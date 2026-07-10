@@ -7,6 +7,7 @@ import Dashboard from './pages/Dashboard'
 import IdeaGenerator from './pages/IdeaGenerator'
 import ScriptWriter from './pages/ScriptWriter'
 import HashtagTool from './pages/HashtagTool'
+import Calendar from './pages/Calendar'
 import Layout from './components/Layout'
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -33,6 +34,7 @@ function App() {
         <Route path="/ideas" element={withLayout(IdeaGenerator)} />
         <Route path="/scripts" element={withLayout(ScriptWriter)} />
         <Route path="/hashtags" element={withLayout(HashtagTool)} />
+        <Route path="/calendar" element={withLayout(Calendar)} />
       </Routes>
     </BrowserRouter>
   )

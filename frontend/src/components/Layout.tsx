@@ -7,6 +7,7 @@ const navItems = [
     { path: '/ideas', icon: '💡', label: 'Idea Generator' },
     { path: '/scripts', icon: '✍️', label: 'Script Writer' },
     { path: '/hashtags', icon: '#️⃣', label: 'Hashtags' },
+    { path: '/calendar', icon: '📅', label: 'Content Calendar' },
 ]
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -38,8 +39,8 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                             key={item.path}
                             to={item.path}
                             className={`flex items-center gap-3 px-4 py-3 rounded-xl transition text-sm font-medium ${location.pathname === item.path
-                                    ? 'bg-indigo-600 text-white'
-                                    : 'text-gray-400 hover:bg-gray-800 hover:text-white'
+                                ? 'bg-indigo-600 text-white'
+                                : 'text-gray-400 hover:bg-gray-800 hover:text-white'
                                 }`}
                         >
                             <span>{item.icon}</span>
