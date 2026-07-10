@@ -27,10 +27,15 @@ export const authAPI = {
   },
 
   login: async (data: LoginData) => {
+    // OAuth2 form format
+    const formData = new URLSearchParams()
+    formData.append('username', data.email)
+    formData.append('password', data.password)
+
     const response = await fetch(`${API_URL}/auth/login`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: formData.toString(),
     })
     if (!response.ok) {
       const error = await response.json()

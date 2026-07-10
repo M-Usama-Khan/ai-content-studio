@@ -23,7 +23,7 @@ const Login: React.FC = () => {
       setAuth(data.user, data.access_token)
       navigate('/dashboard')
     } catch (err: any) {
-      setError(err.message)
+      setError(err.message || 'Login failed. Please try again.')
     } finally {
       setLoading(false)
     }
