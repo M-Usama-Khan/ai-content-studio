@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { scriptsAPI } from '../api/scripts'
+import toast from 'react-hot-toast'
 
 const platforms = ['YouTube', 'Instagram', 'TikTok', 'LinkedIn']
 const languages = ['English', 'Urdu', 'Hindi']
@@ -16,7 +17,7 @@ const ScriptWriter: React.FC = () => {
 
     const handleGenerate = async () => {
         if (!title.trim()) {
-            setError('Please enter a title!')
+            toast.error('Please enter a title!')
             return
         }
         setLoading(true)
@@ -25,7 +26,9 @@ const ScriptWriter: React.FC = () => {
         try {
             const data = await scriptsAPI.generate({ title, platform, language, duration })
             setScript(data.script)
+            toast.success('Script generated! ✍️')
         } catch (err: any) {
+            toast.error(err.message || 'Failed to generate script')
             setError(err.message)
         } finally {
             setLoading(false)
@@ -36,19 +39,14 @@ const ScriptWriter: React.FC = () => {
         if (!script) return
         const text = `
 HOOK: ${script.hook}
-
 INTRO: ${script.intro}
-
 MAIN CONTENT:
 ${script.main_content?.map((s: any) => `[${s.timestamp}] ${s.content}`).join('\n\n')}
-
 CALL TO ACTION: ${script.call_to_action}
-
 CAPTION: ${script.caption}
-    `.trim()
+  `.trim()
         navigator.clipboard.writeText(text)
-        setCopied(true)
-        setTimeout(() => setCopied(false), 2000)
+        toast.success('Script copied! 📋')
     }
 
     return (
@@ -69,7 +67,7 @@ CAPTION: ${script.caption}
                     />
                 </div>
 
-                <div className="grid grid-cols-3 gap-4 mb-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
                     <div>
                         <label className="text-gray-400 text-sm mb-1 block">Platform</label>
                         <select

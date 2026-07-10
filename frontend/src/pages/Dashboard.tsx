@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useAuthStore } from '../store/authStore'
 import { useNavigate } from 'react-router-dom'
 import { dashboardAPI } from '../api/dashboard'
+import toast from 'react-hot-toast'
 
 interface Stats {
   totalIdeas: number
@@ -33,6 +34,7 @@ const Dashboard: React.FC = () => {
         })
       } catch (err) {
         console.error(err)
+        toast.error('Failed to load dashboard data')
       } finally {
         setLoading(false)
       }
@@ -91,7 +93,7 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* Stat Cards */}
-      <div className="grid grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {statCards.map((card, i) => (
           <div
             key={i}
@@ -112,7 +114,7 @@ const Dashboard: React.FC = () => {
       {/* Quick Actions */}
       <div className="bg-gray-900 rounded-2xl p-6 border border-gray-800 mb-8">
         <h2 className="text-lg font-semibold text-white mb-4">⚡ Quick Actions</h2>
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {quickActions.map((action, i) => (
             <button
               key={i}
@@ -127,7 +129,7 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* Recent Activity */}
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
         {/* Recent Ideas */}
         <div className="bg-gray-900 rounded-2xl p-6 border border-gray-800">

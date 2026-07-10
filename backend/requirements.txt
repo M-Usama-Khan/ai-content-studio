@@ -5,6 +5,8 @@ psycopg2-binary
 python-dotenv
 pydantic[email]
 python-jose[cryptography]
-passlib[bcrypt]
-anthropic
+bcrypt
+groq
+reportlab
+python-multipart
 alembic

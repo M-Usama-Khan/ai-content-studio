@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
 import { authAPI } from '../api/auth'
+import toast from 'react-hot-toast'
 
 const Register: React.FC = () => {
   const navigate = useNavigate()
@@ -26,9 +27,12 @@ const Register: React.FC = () => {
     try {
       const data = await authAPI.register(form)
       setAuth(data.user, data.access_token)
+      toast.success('Account created! Welcome 🎉')
       navigate('/dashboard')
     } catch (err: any) {
-      setError(err.message)
+      const msg = err.message || 'Registration failed'
+      setError(msg)
+      toast.error(msg)
     } finally {
       setLoading(false)
     }

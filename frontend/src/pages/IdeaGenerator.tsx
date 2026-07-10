@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { ideasAPI, Idea } from '../api/ideas'
+import toast from 'react-hot-toast'
 
 const platforms = ['YouTube', 'Instagram', 'TikTok', 'LinkedIn', 'Twitter']
 const languages = ['English', 'Urdu', 'Hindi']
@@ -25,7 +26,9 @@ const IdeaGenerator: React.FC = () => {
         try {
             const data = await ideasAPI.generate({ platform, niche, language, count })
             setIdeas(data.ideas)
+            toast.success(`${data.ideas.length} ideas generated! 🎉`)
         } catch (err: any) {
+            toast.error(err.message || 'Failed to generate ideas')
             setError(err.message)
         } finally {
             setLoading(false)
@@ -34,8 +37,8 @@ const IdeaGenerator: React.FC = () => {
 
     const copyToClipboard = (text: string) => {
         navigator.clipboard.writeText(text)
+        toast.success('Copied to clipboard! 📋')
     }
-
     return (
         <div className="p-6 max-w-5xl mx-auto">
             <h1 className="text-2xl font-bold text-white mb-2">💡 Idea Generator</h1>
@@ -43,7 +46,7 @@ const IdeaGenerator: React.FC = () => {
 
             {/* Form */}
             <div className="bg-gray-900 rounded-2xl p-6 border border-gray-800 mb-6">
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
 
                     {/* Platform */}
                     <div>

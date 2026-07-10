@@ -5,7 +5,11 @@ import json
 
 load_dotenv()
 
-client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+if not GROQ_API_KEY:
+    raise RuntimeError("GROQ_API_KEY is not set in .env file")
+
+client = Groq(api_key=GROQ_API_KEY)
 MODEL = "llama-3.3-70b-versatile"
 
 def generate_content_ideas(platform: str, niche: str, language: str, count: int = 10) -> list:
@@ -101,7 +105,10 @@ Write content in {language}. Return only valid JSON."""
     elif "```" in content:
         content = content.split("```")[1].split("```")[0].strip()
 
-    return json.loads(content)
+    try:
+        return json.loads(content)
+    except json.JSONDecodeError:
+        raise ValueError("AI returned invalid JSON for script generation")
 
 
 def generate_hashtags(niche: str, platform: str, topic: str, language: str) -> dict:
@@ -139,4 +146,7 @@ Return only valid JSON."""
     elif "```" in content:
         content = content.split("```")[1].split("```")[0].strip()
 
-    return json.loads(content)
+    try:
+        return json.loads(content)
+    except json.JSONDecodeError:
+        raise ValueError("AI returned invalid JSON for hashtag generation")

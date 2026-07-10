@@ -53,14 +53,33 @@ class Script(Base):
     # Relationship
     user = relationship("User", back_populates="scripts")
 
-# Calendar Table
+# Content Calendars Table
+class ContentCalendar(Base):
+    __tablename__ = "content_calendars"
+
+    id = Column(String, primary_key=True, default=generate_uuid)
+    user_id = Column(String, ForeignKey("users.id"), nullable=False)
+    name = Column(String(255), nullable=False)
+    platform = Column(String(50), nullable=False)
+    niche = Column(String(100), nullable=False)
+    language = Column(String(20), default="English")
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    # Relationship
+    posts = relationship("CalendarPost", back_populates="calendar", cascade="all, delete")
+
+# Calendar Posts Table
 class CalendarPost(Base):
     __tablename__ = "calendar_posts"
 
     id = Column(String, primary_key=True, default=generate_uuid)
+    calendar_id = Column(String, ForeignKey("content_calendars.id"), nullable=True)
     user_id = Column(String, ForeignKey("users.id"), nullable=False)
     post_date = Column(DateTime, nullable=False)
     topic = Column(String(255), nullable=False)
     platform = Column(String(50), nullable=False)
     status = Column(String(20), default="planned")
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    # Relationship
+    calendar = relationship("ContentCalendar", back_populates="posts")

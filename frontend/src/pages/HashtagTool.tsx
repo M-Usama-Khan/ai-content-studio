@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { scriptsAPI } from '../api/scripts'
+import toast from 'react-hot-toast'
 
 const platforms = ['YouTube', 'Instagram', 'TikTok', 'LinkedIn', 'Twitter']
 const languages = ['English', 'Urdu', 'Hindi']
@@ -25,6 +26,7 @@ const HashtagTool: React.FC = () => {
         try {
             const data = await scriptsAPI.generateHashtags({ niche, platform, topic, language })
             setResult(data.hashtags)
+            toast.success('Hashtag strategy ready! #️⃣')
         } catch (err: any) {
             setError(err.message)
         } finally {
@@ -34,6 +36,7 @@ const HashtagTool: React.FC = () => {
 
     const copyHashtags = (tags: string[]) => {
         navigator.clipboard.writeText(tags.join(' '))
+        toast.success('Hashtags copied! 📋')
     }
 
     return (
@@ -54,7 +57,7 @@ const HashtagTool: React.FC = () => {
                     />
                 </div>
 
-                <div className="grid grid-cols-3 gap-4 mb-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
                     <div>
                         <label className="text-gray-400 text-sm mb-1 block">Platform</label>
                         <select
@@ -117,7 +120,7 @@ const HashtagTool: React.FC = () => {
                 <div className="space-y-4">
 
                     {/* Stats */}
-                    <div className="grid grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div className="bg-gray-900 rounded-xl p-4 border border-gray-800 text-center">
                             <p className="text-2xl font-bold text-indigo-400">⏰</p>
                             <p className="text-white font-semibold mt-1">{result.best_posting_time}</p>

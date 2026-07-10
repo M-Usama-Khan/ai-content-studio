@@ -2,12 +2,12 @@ import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
 import { authAPI } from '../api/auth'
+import toast from 'react-hot-toast'
 
 const Login: React.FC = () => {
   const navigate = useNavigate()
   const { setAuth } = useAuthStore()
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
   const [form, setForm] = useState({ email: '', password: '' })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -17,13 +17,13 @@ const Login: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    setError('')
     try {
       const data = await authAPI.login(form)
       setAuth(data.user, data.access_token)
+      toast.success('Welcome back! 👋')
       navigate('/dashboard')
     } catch (err: any) {
-      setError(err.message || 'Login failed. Please try again.')
+      toast.error(err.message || 'Login failed!')
     } finally {
       setLoading(false)
     }
@@ -32,22 +32,13 @@ const Login: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-950 flex items-center justify-center px-4">
       <div className="w-full max-w-md">
-
-        {/* Logo */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-indigo-400">AI Content Studio</h1>
           <p className="text-gray-400 mt-2">Welcome back!</p>
         </div>
 
-        {/* Card */}
         <div className="bg-gray-900 rounded-2xl p-8 border border-gray-800">
           <h2 className="text-xl font-semibold text-white mb-6">Login</h2>
-
-          {error && (
-            <div className="bg-red-500/10 border border-red-500/50 text-red-400 px-4 py-3 rounded-lg mb-4 text-sm">
-              {error}
-            </div>
-          )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
@@ -81,7 +72,7 @@ const Login: React.FC = () => {
               disabled={loading}
               className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-800 text-white font-semibold py-3 rounded-lg transition mt-2"
             >
-              {loading ? 'Logging in...' : 'Login'}
+              {loading ? '⏳ Logging in...' : 'Login'}
             </button>
           </form>
 

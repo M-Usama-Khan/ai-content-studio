@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 from fastapi.security import OAuth2PasswordBearer
+# pyrefly: ignore [missing-import]
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.services.auth_service import verify_token, get_user_by_email
@@ -46,14 +47,15 @@ def export_ideas_pdf(
     story.append(Paragraph(f"Content Ideas Report — {user.name}", styles['Normal']))
     story.append(Spacer(1, 20))
 
+    header_style = ParagraphStyle(
+        'IdeaHeader',
+        parent=styles['Heading2'],
+        textColor=HexColor('#6366f1'),
+        fontSize=14
+    )
+
     for idea_record in ideas:
         # Section Header
-        header_style = ParagraphStyle(
-            'Header',
-            parent=styles['Heading2'],
-            textColor=HexColor('#6366f1'),
-            fontSize=14
-        )
         story.append(Paragraph(
             f"📱 {idea_record.platform} — {idea_record.niche} ({idea_record.language})",
             header_style
