@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from app.database import engine, Base
 from app.models import models
-from app.routers import auth, ideas, scripts, calendar
+from app.routers import auth, ideas, scripts, calendar, export
 
 load_dotenv()
 
@@ -27,6 +27,7 @@ app.include_router(auth.router)
 app.include_router(ideas.router)
 app.include_router(scripts.router)
 app.include_router(calendar.router)
+app.include_router(export.router)
 
 @app.get("/")
 def root():

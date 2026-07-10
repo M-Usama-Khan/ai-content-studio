@@ -9,6 +9,7 @@ import ScriptWriter from './pages/ScriptWriter'
 import HashtagTool from './pages/HashtagTool'
 import Calendar from './pages/Calendar'
 import Layout from './components/Layout'
+import History from './pages/History'
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated } = useAuthStore()
@@ -35,6 +36,7 @@ function App() {
         <Route path="/scripts" element={withLayout(ScriptWriter)} />
         <Route path="/hashtags" element={withLayout(HashtagTool)} />
         <Route path="/calendar" element={withLayout(Calendar)} />
+        <Route path="/history" element={withLayout(History)} />
       </Routes>
     </BrowserRouter>
   )

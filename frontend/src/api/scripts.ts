@@ -48,4 +48,11 @@ export const scriptsAPI = {
         }
         return response.json()
     },
+
+    getHistory: async () => {
+        const response = await fetch(`${API_URL}/scripts/history`, {
+            headers: { 'Authorization': `Bearer ${getToken()}` }
+        })
+        return response.json()
+    }
 }

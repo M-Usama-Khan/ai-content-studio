@@ -8,6 +8,7 @@ const navItems = [
     { path: '/scripts', icon: '✍️', label: 'Script Writer' },
     { path: '/hashtags', icon: '#️⃣', label: 'Hashtags' },
     { path: '/calendar', icon: '📅', label: 'Content Calendar' },
+    { path: '/history', icon: '📚', label: 'History' },
 ]
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
